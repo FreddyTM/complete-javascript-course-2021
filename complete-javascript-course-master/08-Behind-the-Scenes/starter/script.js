@@ -24,3 +24,38 @@ function calcAge(birthYear) {
 
 const firstName = 'Jonas';
 calcAge(1991);
+
+//Variable & constant hoisting
+console.log(me); /* UNDEFINED BUT ACCESSIBLE BECAUSE OF HOISTING*/
+/* console.log(job); CANNOT ACCESS BEFORE DECLARATION*/
+/* console.log(year); CANNOT ACCESS BEFORE DECLARATION*/
+
+var me = 'Jonas';
+let job = 'teacher';
+const year = 1991;
+
+//Function hoisting
+console.log(
+  addDecl(2, 3)
+); /*IT WORKS BECAUSE OF FUNCTION DECLARATION HOISTING, WE GET 5*/
+/* console.log(addExpr(2, 3)); CANNOT ACCESS BEFORE DECLARATION*/
+/* console.log(addArrow(2, 3)); CANNOT ACCESS BEFORE DECLARATION*/
+
+//Function declaration
+function addDecl(a, b) {
+  return a + b;
+}
+//Function expression, works like a variable declaration
+const addExpr = function (a, b) {
+  return a + b;
+};
+//Arrow function
+const addArrow = (a, b) => a + b;
+
+//Example
+if (!numProducts) deleteShoppingCart();
+var numProducts = 10;
+
+function deleteShoppingCart() {
+  console.log('All products deleted!');
+}
