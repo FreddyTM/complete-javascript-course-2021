@@ -59,3 +59,43 @@ var numProducts = 10;
 function deleteShoppingCart() {
   console.log('All products deleted!');
 }
+
+// The this Keyword in Practice
+console.log(this);
+
+const calcAge2 = function (birthYear) {
+  console.log('calcAge2');
+  console.log(2037 - birthYear);
+  console.log(this);
+};
+calcAge2(
+  1991
+); /*this is undefined, but we can add a this context using function () {some code here}.bind(this)*/
+
+const calcAgeArrow = birthYear => {
+  console.log('calcArrow');
+  console.log(2037 - birthYear);
+  console.log(this);
+};
+calcAgeArrow(
+  1980
+); /*this is window object here, because arrow functions uses this from the code that contains the function*/
+
+const jonas = {
+  year: 1991,
+  calcAge: function () {
+    console.log(this);
+    console.log(2037 - this.year);
+  },
+};
+jonas.calcAge(); /*this is jonas object, not because the function is inside the jonas object, but because is the object calling the funcion*/
+
+const matilda = {
+  year: 2017,
+};
+
+matilda.calcAge = jonas.calcAge;
+matilda.calcAge(); /*this is matilda object (the caller), even when the method calcAge was borrowed of jonas object*/
+
+const f = jonas.calcAge;
+f(); /*this is undefined, it's a regular function call, and we get an error because the jonas.calcAge needs the year parameter and it's missing in f() context*/
