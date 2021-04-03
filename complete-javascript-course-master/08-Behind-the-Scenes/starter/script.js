@@ -210,3 +210,41 @@ var addArrow2 = (a, b) => {
   return a + b;
 };
 /* addArrow2(2, 5, 8); ERROR, ARROW FUNCTIONS CANNOT USE THE arguments KEYWORD TO GET THE ARGUMENTS OF THE FUNCTION*/
+
+//PRIMITIVES & OBJECTS
+let lastName = 'Williams';
+let oldLastName = lastName;
+lastName = 'Davis';
+console.log(lastName, oldLastName);
+//lastName & oldLastName have different values
+
+// Reference types
+const jessica = {
+  firstName: 'Jessica',
+  lastName: 'Williams',
+  age: 27,
+};
+const marriedJessica = jessica;
+marriedJessica.lastName = 'Davis';
+console.log('Before marriage:', jessica);
+console.log('After marriage: ', marriedJessica);
+//Changing one property in marriedJessica will change it too in jessica, they are two references to the same object
+
+const jessica2 = {
+  firstName: 'Jessica',
+  lastName: 'Williams',
+  age: 27,
+  family: ['Alice', 'Bob'],
+};
+
+//SHALLOW COPY OF AN OBJECT. INNER OBJECTS WILL REMAIN REFERENCE OF OTHER OBJECTS, NOT NEW ONES
+const jessicaCopy = Object.assign({}, jessica2);
+jessicaCopy.lastName = 'Davis';
+
+console.log('Before marriage:', jessica2); //Jessica Williams
+console.log('After marriage: ', jessicaCopy); //Jessica Davids
+
+//Arrays are objects. Family array is an object within an object, and any change to it will affect outer objects with the same object reference
+jessicaCopy.family.push('Mary');
+jessicaCopy.family.push('John');
+//Now jessica2.family also has 'Mary' and 'John'
