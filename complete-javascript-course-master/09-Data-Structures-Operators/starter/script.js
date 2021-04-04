@@ -261,3 +261,65 @@ console.log(guests); // 10, incorrect
 //Problem solved with nullish coalescing operator
 const guestCorrect = restaurant.numGuests ?? 10;
 console.log(guestCorrect); // 0, correct
+
+//LOOPING ARRAYS ///////////////////////////////////////////////////
+const myMenu = [...restaurant.starterMenu, ...restaurant.mainMenu];
+
+// The for-of Loop
+for (const item of myMenu) console.log(item); //List of all items
+// The for-of Loop with index
+for (const item of myMenu.entries()) console.log(item);
+//List of arrays with index & items
+//(2) [0, "Focaccia"]
+//(2) [1, "Bruschetta"]
+//(2) [2, "Garlic Bread"]
+//(2) [3, "Caprese Salad"]
+//(2) [4, "Pizza"]
+//(2) [5, "Pasta"]
+//(2) [6, "Risotto"]
+
+//Example using item array values
+for (const item of myMenu.entries()) {
+  console.log(`${item[0] + 1}: ${item[1]}`);
+}
+//Example destructuring item array
+for (const [i, el] of myMenu.entries()) {
+  console.log(`${i + 1}: ${el}`);
+}
+//1: Focaccia
+//2: Bruschetta
+//3: Garlic Bread
+//4: Caprese Salad
+//5: Pizza
+//6: Pasta
+//7: Risotto
+
+//ENHANCED OBJECT LITERALS ///////////////////////////////////////////////////
+const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+const drinks = {
+  softDrinks: ['Coca-cola', 'water', 'orange juice'],
+  alcohol: ['beer', 'wine', 'vermout', 'whisky', 'rum'],
+};
+
+const bigRestaurant = {
+  name: 'My big restaurant',
+  location: 'My hometown',
+  categories: ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'],
+  starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
+  mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+  //Before ES6, to put an external object into an object we needed a refeence and a value of the same type
+  //drinks: drinks,
+  //With ES6 enhanced object literals, we only need the object name
+  drinks,
+
+  //Before ES6, functions inside objects must be declared with function keyword
+  order: function (starterIndex, mainIndex) {
+    return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+  },
+  //With ES6 enhanced object literals, we can get rid of function keyword
+  newOrder(starterIndex, mainIndex) {
+    return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+  },
+};
+
+console.log(bigRestaurant);
