@@ -220,3 +220,44 @@ console.log(...xx); //23 5 7
 
 restaurant.orderPizza('mushrooms', 'onion', 'olives', 'spinach'); //mushrooms (3) ["onion", "olives", "spinach"] (1 variable + 1 array)
 restaurant.orderPizza('mushrooms'); //mushrooms [] (1 variable + 1 empty array)
+
+//SHORT-CIRCUITING WITH && ||
+//Evaluation of expressions that are not boolean, considering truthy and falsy values into the expressions
+
+//OR operator
+console.log(3 || 'Jonas'); // 3, because is trutty (the second value is not evaluated)
+console.log('' || 'Jonas'); // Jonas, because '' is a falsy value
+console.log(true || 0); // true
+console.log(undefined || null); // null, if all values are falsy, then the last value is returned
+console.log(undefined || 0 || '' || 'Hello' || 23 || null); // Hello, the first truthy value
+
+/* restaurant.numGuests = 23; */
+const guests1 = restaurant.numGuests ? restaurant.numGuests : 10;
+console.log(guests1); //10, because restaurant.numGuests doesn't exists
+
+//An alternative to the ternary operator
+//CAUTION. If restaurant.numGuests = 0 (a falsy value), then restaurant.numGuests will be evaluated as FALSE
+const guests2 = restaurant.numGuests || 10;
+console.log(guests2); //The same result
+
+//AND operator
+console.log(0 && 'Jonas'); //0, if a value is a falsy value, it returns it without evaluating the rest
+console.log(7 && 'Jonas'); //Jonas, if the expression is true, it returns the last value
+console.log('Hello' && 23 && null && 'jonas'); //null, the first falsy value
+
+// Practical example
+if (restaurant.orderPizza) {
+  restaurant.orderPizza('mushrooms', 'spinach');
+}
+//An alternative to the if statement
+restaurant.orderPizza && restaurant.orderPizza('mushrooms', 'spinach');
+
+//NULLISH COALESCING OPERATOR ?? (works with nullish values: null & undefined)
+//Short-circuiting with || give us a wrong result, because 0 is the actual value of restaurant.numGuests, but also a falsy value
+restaurant.numGuests = 0;
+const guests = restaurant.numGuests || 10;
+console.log(guests); // 10, incorrect
+
+//Problem solved with nullish coalescing operator
+const guestCorrect = restaurant.numGuests ?? 10;
+console.log(guestCorrect); // 0, correct
