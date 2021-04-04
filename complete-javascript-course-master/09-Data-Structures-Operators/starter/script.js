@@ -321,5 +321,99 @@ const bigRestaurant = {
     return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
   },
 };
-
 console.log(bigRestaurant);
+
+//OPTIONAL CHAINING ///////////////////////////////////////////////////
+//We don't know if a restaurant has an openingHours property, and if so, if it has a mon property, so we check
+if (restaurant.openingHours && restaurant.openingHours.mon)
+  console.log(restaurant.openingHours.mon.open);
+
+//If we don't check, and restaurant.openingHours.mon doesn't exsists (so its undefined), we'll get an error trying to read the 'open' property
+//console.log(restaurant.openingHours.mon.open); //Uncaught TypeError: Cannot read property 'open' of undefined
+
+// WITH optional chaining, if some property of the chain doesn't exist, we'll get undefined, but not an error
+console.log(restaurant.openingHours.mon?.open);
+console.log(restaurant.openingHours?.mon?.open);
+
+//Example with for-of Loop
+for (const day of days) {
+  const open = restaurant.openingHours[day]?.open ?? 'closed';
+  console.log(`On ${day}, we open at ${open}`);
+}
+
+//Example with expression as a function argument
+console.log(restaurant.order?.(0, 1) ?? 'Method does not exist');
+console.log(restaurant.orderRisotto?.(0, 1) ?? 'Method does not exist');
+
+//Example with arrays
+const users = [{ name: 'Jonas', email: 'hello@jonas.io' }];
+// const users = [];
+
+console.log(users[0]?.name ?? 'User array empty');
+
+if (users.length > 50) console.log(users[0].name);
+else console.log('user array empty');
+
+//LOOPING OBJECTS ///////////////////////////////////////////////////
+// Property NAMES
+const properties = Object.keys(openingHours);
+console.log(properties);
+
+let openStr = `We are open on ${properties.length} days: `;
+for (const day of properties) {
+  openStr += `${day}, `;
+}
+console.log(openStr);
+
+// Property VALUES
+const values = Object.values(openingHours);
+console.log(values);
+
+// Entire object
+const entries = Object.entries(openingHours);
+// console.log(entries);
+console.log(entries);
+
+// [key, value]
+for (const [day, { open, close }] of entries) {
+  console.log(`On ${day} we open at ${open} and close at ${close}`);
+}
+
+//SETS
+//Sets are collections of unique values (NO DUPLICATES)
+//We build a set out of an iterable, as an array
+const ordersSet = new Set([
+  'Pasta',
+  'Pizza',
+  'Pizza',
+  'Risotto',
+  'Pasta',
+  'Pizza',
+]);
+//No duplicates, and no particular order of elements (NO INDEXES)
+console.log(ordersSet); //Set(3) {"Pasta", "Pizza", "Risotto"}
+//A set build of a string will hold each character as an element
+console.log(new Set('Jonas')); //Set(5) {"J", "o", "n", "a", "s"}
+console.log(ordersSet.size); //3
+console.log(ordersSet.has('Pizza')); //true
+console.log(ordersSet.has('Bread')); //false
+ordersSet.add('Garlic Bread');
+console.log(ordersSet); //Set(4) {"Pasta", "Pizza", "Risotto", "Garlic Bread"}
+ordersSet.delete('Risotto');
+console.log(ordersSet); //Set(3) {"Pasta", "Pizza", "Garlic Bread"}
+/* ordersSet.clear(); */
+console.log(ordersSet); //Set(0) {}
+//Looping a set
+for (const order of ordersSet) console.log(order);
+
+// Example
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+//Using a set and sread operator to create a new array with only the unique elements of staff
+const staffUnique = [...new Set(staff)];
+console.log(staffUnique);
+//Find how many unique elements in an array. Transform to a set, and then .size
+console.log(
+  new Set(['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter']).size
+);
+
+console.log(new Set('jonasschmedtmann').size);
