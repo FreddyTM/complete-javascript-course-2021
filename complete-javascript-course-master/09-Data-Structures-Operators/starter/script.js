@@ -403,6 +403,8 @@ ordersSet.delete('Risotto');
 console.log(ordersSet); //Set(3) {"Pasta", "Pizza", "Garlic Bread"}
 /* ordersSet.clear(); */
 console.log(ordersSet); //Set(0) {}
+ordersSet.add('chili bread');
+console.log(ordersSet);
 //Looping a set
 for (const order of ordersSet) console.log(order);
 
