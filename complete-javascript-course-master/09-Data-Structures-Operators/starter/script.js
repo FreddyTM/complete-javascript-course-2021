@@ -379,7 +379,7 @@ for (const [day, { open, close }] of entries) {
   console.log(`On ${day} we open at ${open} and close at ${close}`);
 }
 
-//SETS
+//SETS ///////////////////////////////////////////////////
 //Sets are collections of unique values (NO DUPLICATES)
 //We build a set out of an iterable, as an array
 const ordersSet = new Set([
@@ -419,3 +419,108 @@ console.log(
 );
 
 console.log(new Set('jonasschmedtmann').size);
+
+//WORKING WITH STRINGS ///////////////////////////////////////////////////
+// Working With Strings - Part 1
+const airline = 'TAP Air Portugal';
+const plane = 'A320';
+
+console.log(plane[0]); //A
+console.log(plane[1]); //3
+console.log(plane[2]); //2
+console.log('B737'[0]); //B
+
+console.log(airline.length); //16
+console.log('B737'.length); //4
+
+console.log(airline.indexOf('r')); //6
+console.log(airline.lastIndexOf('r')); //10
+console.log(airline.indexOf('portugal')); //Case sensitive, so -1 because is not found. 'Portugal' would be 8
+
+console.log(airline.slice(4)); //Slice from 4th position, so 'Air Portugal'
+console.log(airline.slice(4, 7)); //Slice from 4th position to 7th position, so 'Air'
+
+console.log(airline.slice(0, airline.indexOf(' '))); //TAP
+console.log(airline.slice(airline.lastIndexOf(' ') + 1)); //Portugal (+1 added to extract the space from the beginning)
+
+//With negative indexes, we start counting from the end of the string
+console.log(airline.slice(-2)); //al
+console.log(airline.slice(1, -1)); //AP Air Portuga
+
+const checkMiddleSeat = function (seat) {
+  // B and E are middle seats
+  const s = seat.slice(-1);
+  if (s === 'B' || s === 'E') console.log('You got the middle seat 😬');
+  else console.log('You got lucky 😎');
+};
+
+checkMiddleSeat('11B');
+checkMiddleSeat('23C');
+checkMiddleSeat('3E');
+
+console.log(new String('jonas')); //When applying methods to strings (primitives), JavaScript converts the strings to String objects
+console.log(typeof new String('jonas')); //type of object
+console.log(typeof new String('jonas').slice(1)); //The result of the methods gets converted back to a string
+
+// Working With Strings - Part 2
+
+console.log(airline.toLowerCase());
+console.log(airline.toUpperCase());
+
+// Fix capitalization in name
+const passenger = 'jOnAS';
+const passengerLower = passenger.toLowerCase();
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+console.log(passengerCorrect); // Jonas
+
+// Comparing emails
+const email = 'hello@jonas.io';
+const loginEmail = '  Hello@Jonas.Io \n';
+
+// const lowerEmail = loginEmail.toLowerCase();
+// const trimmedEmail = lowerEmail.trim();
+
+//trim() Removes the leading and trailing white space and line terminator characters from a string.
+const normalizedEmail = loginEmail.toLowerCase().trim();
+console.log(normalizedEmail);
+console.log(email === normalizedEmail);
+
+// replacing
+const priceGB = '288,97£';
+const priceUS = priceGB.replace('£', '$').replace(',', '.');
+console.log(priceUS);
+
+const announcement =
+  'All passengers come to boarding door 23. Boarding door 23!';
+
+//replace() only replaces the first occurrence
+console.log(announcement.replace('door', 'gate'));
+//replaceAll() replaces all occurences
+console.log(announcement.replaceAll('door', 'gate'));
+//Alternatively, we can use regular expressions
+/* console.log(announcement.replace(/door/g, 'gate')); */
+
+// Booleans
+const secondPlane = 'Airbus A320neo';
+console.log(secondPlane.includes('A320')); //true
+console.log(secondPlane.includes('Boeing')); //false
+console.log(secondPlane.startsWith('Airb')); //true
+
+if (secondPlane.startsWith('Airbus') && secondPlane.endsWith('neo')) {
+  console.log('Part of the NEW ARirbus family');
+}
+
+// Practice exercise
+const checkBaggage = function (items) {
+  const baggage = items.toLowerCase(); //toLowerCase() to avoid 'Knife' or 'GUN' not being checked
+
+  if (baggage.includes('knife') || baggage.includes('gun')) {
+    console.log('You are NOT allowed on board');
+  } else {
+    console.log('Welcome aboard!');
+  }
+};
+checkBaggage('I have a laptop, some Food and a pocket Knife');
+checkBaggage('Socks and camera');
+checkBaggage('Got some snacks and a gun for protection');
