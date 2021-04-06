@@ -117,3 +117,55 @@ console.log([...arr, ...arr2]); //the same as concat()
 
 // JOIN - Gets a string with all the elements of an array separated by the character passed as argument
 console.log(letters.join(' - ')); //a - b - c - d - e - f - g - h - i - j
+
+///////////////////////////////////////
+// LOOPING ARRAYS: forEach()
+const newMovements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+// for (const movement of movements) {
+for (const [i, newMovement] of movements.entries()) {
+  if (newMovement > 0) {
+    console.log(`Movement ${i + 1}: You deposited ${newMovement}`);
+  } else {
+    console.log(`Movement ${i + 1}: You withdrew ${Math.abs(newMovement)}`);
+  }
+}
+
+console.log('---- FOREACH ----');
+//mov, The current element being processed in the array
+//i, The index of currentValue in the array
+//arr, The array forEach() was called upon
+//IMPORTANT: continue & break don't work into forEach.
+newMovements.forEach(function (mov, i, arr) {
+  if (mov > 0) {
+    console.log(`Movement ${i + 1}: You deposited ${mov}`);
+  } else {
+    console.log(`Movement ${i + 1}: You withdrew ${Math.abs(mov)}`);
+  }
+});
+// 0: function(200)
+// 1: function(450)
+// 2: function(400)
+// ...
+
+///////////////////////////////////////
+// forEach With Maps and Sets
+// Map - forEach(function (value, key, map)
+const currencies2 = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+
+currencies2.forEach(function (value, key, map) {
+  console.log(`${key}: ${value}`);
+});
+
+// Set
+//We don't need the key parameter, as sets don't have keys
+//To omit a parameter that we don't need, we have to use an underscore '_'
+const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
+console.log(currenciesUnique);
+currenciesUnique.forEach(function (value, _, map) {
+  console.log(`${value}: ${value}`);
+});
