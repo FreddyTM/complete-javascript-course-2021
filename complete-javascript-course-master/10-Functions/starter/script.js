@@ -217,3 +217,101 @@ const addTaxRate = function (rate) {
 const addVAT2 = addTaxRate(0.23);
 console.log(addVAT2(100));
 console.log(addVAT2(23));
+
+///////////////////////////////////////
+// Immediately Invoked Function Expressions (IIFE)
+//Functions executed once, and then dissapear
+const runOnce = function () {
+  console.log('This will never run again');
+};
+runOnce();
+
+// IIFE
+//anonymous function wrapped in parentheses, with the final () to be executed immediately
+(function () {
+  console.log('This will never run again');
+  const isPrivate = 23;
+})();
+
+// console.log(isPrivate);
+
+//We can use arrow functions as well
+(() => console.log('This will ALSO never run again'))();
+
+{
+  const isPrivate = 23;
+  var notPrivate = 46;
+}
+// console.log(isPrivate);
+console.log(notPrivate);
+
+///////////////////////////////////////
+// Closures
+//A FUNCTION HAS ACCESS TO THE VARIABLE ENVIRONMENT OF THE EXECUTION CONTEXT IN WHICH IT WAS CREATED,
+//EVEN THIS EXECUTION CONTEXT NO LONGER INCLUDES THAT FUNCTION IN THE CALL STACK
+
+//THE CLOSURE IS THE VARIABLE ENVIRONMENT ATTACHED TO THE FUNCTION, SO THE SCOPE CHAIN IS PRESERVED
+//THE CLOSURE GIVES A FUNCTION ACCESS TO ALL THE VARIABLES OF ITS OUTER SCOPE, WHICH PRESERVES THE SCOPE CHAIN
+//THROUGHOUT TIME
+
+//A CLOSURE MAKES SURE THAT A FUNCTION DOESN'T LOSE CONNECTION TO VARIABLES THAT EXISTED AT THE FUNCTION'S BIRTH PLACE
+const secureBooking = function () {
+  let passengerCount = 0;
+
+  return function () {
+    passengerCount++;
+    console.log(`${passengerCount} passengers`);
+  };
+};
+
+const booker = secureBooking();
+
+booker();
+booker();
+booker();
+
+console.dir(booker);
+
+///////////////////////////////////////
+// More Closure Examples
+// Example 1
+let f;
+
+const g = function () {
+  const a = 23;
+  f = function () {
+    console.log(a * 2);
+  };
+};
+
+const h = function () {
+  const b = 777;
+  f = function () {
+    console.log(b * 2);
+  };
+};
+
+g();
+f(); //46
+console.dir(f);
+
+// Re-assigning f function
+h();
+f(); //1554
+console.dir(f);
+
+// Example 2
+const boardPassengers = function (n, wait) {
+  const perGroup = n / 3;
+
+  setTimeout(function () {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passengers`);
+  }, wait * 1000);
+
+  console.log(`Will start boarding in ${wait} seconds`);
+};
+
+const perGroup = 1000;
+//setTimeout() will still use the perGroup constant inside of boardPassengers. Closures have precedence over global scope
+boardPassengers(180, 3); //There are 3 groups, each with 60 passengers (not 1000 passengers)
