@@ -105,7 +105,7 @@ currencies2.forEach(function (value, key, map) {
 //To omit a parameter that we don't need, we have to use an underscore '_'
 const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
 console.log(currenciesUnique);
-currenciesUnique.forEach(function (value, _, map) {
+currenciesUnique.forEach(function (value, _, set) {
   console.log(`${value}: ${value}`);
 });
 
@@ -133,3 +133,60 @@ const movementsDescriptions = movements.map(
     )}`
 );
 console.log(movementsDescriptions);
+
+///////////////////////////////////////
+// The filter Method
+const deposits = movements.filter(function (mov) {
+  //filter() creates an array of elements from another array
+  return mov > 0; //if mov fits the conditions, goes into the deposits array
+});
+console.log(movements);
+console.log(deposits);
+
+const depositsFor = [];
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
+console.log(depositsFor);
+
+//filter() creates an array of elements from another array
+const withdrawals = movements.filter(function (mov) {
+  return mov < 0; //if mov fits the conditions, goes into the deposits array
+});
+/* const withdrawals = movements.filter(mov => mov < 0); */
+console.log(withdrawals);
+
+///////////////////////////////////////
+// The reduce Method - Reducing all the values of an array to a single value
+//array.reduce(function(accumulator, arrayElement, i, array), accumulator_initial_value)
+console.log(movements);
+
+// accumulator -> SNOWBALL that accumulates the values
+// const balance = movements.reduce(function (acc, cur, i, arr) {
+//   console.log(`Iteration ${i}: ${acc}`);
+//   return acc + cur;
+// }, 0);
+const balance = movements.reduce((acc, cur) => acc + cur, 0);
+console.log(balance);
+
+let balance2 = 0;
+for (const mov of movements) balance2 += mov;
+console.log(balance2);
+console.log('aaaaaaaaaaaaaaaaaaa');
+
+const maxValue = movements.reduce((acc, cur) => {
+  cur > acc ? (acc = cur) : acc;
+  return acc;
+}, movements[0]); //Number.MIN_VALUE to get the minimum possible value
+console.log(maxValue);
+
+const maxValue2 = movements.reduce(
+  (acc, cur) => (acc > cur ? acc : cur),
+  movements[0]
+);
+console.log(maxValue2);
+/* // Maximum value
+const max = movements.reduce((acc, mov) => {
+  if (acc > mov) return acc;
+  else return mov;
+}, movements[0]);
+console.log(max);
+ */

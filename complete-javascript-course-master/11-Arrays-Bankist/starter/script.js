@@ -88,3 +88,42 @@ const displayMovements = function (movements) {
 };
 
 displayMovements(account1.movements);
+
+const createUserNames = function (accs) {
+  //accs -> array of objects
+  accs.forEach(function (account) {
+    //for each object into the array of objects
+    account.userName = account.owner //create new property called userName, and put the initials of owner property
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+createUserNames(accounts);
+/* const createUserNames = function (user) {
+  const userName = user
+    .toLowerCase()
+    .split(' ')
+    .map(name => name[0])
+    .join('');
+  return userName;
+}; */
+console.log(accounts);
+
+/* const user = 'Steven Thomas Williams'; */
+//["s", "t", "w"] -> join() -> stw
+/* console.log(userName); */
+/* const userName = user.toLowerCase().split(' '); //['steven`, 'thomas', 'williams']
+const userInitials = [];
+userName.forEach(function (mov, i, arr) {
+  userInitials.push(arr[i].slice(0, 1).toUpperCase());
+});
+console.log(userInitials); */
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance}€`;
+};
+
+calcDisplayBalance(account1.movements);
