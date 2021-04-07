@@ -87,7 +87,7 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
+/* displayMovements(account1.movements); */
 
 const createUserNames = function (accs) {
   //accs -> array of objects
@@ -126,23 +126,55 @@ const calcDisplayBalance = function (movements) {
   labelBalance.textContent = `${balance}€`;
 };
 
-calcDisplayBalance(account1.movements);
+/* calcDisplayBalance(account1.movements); */
 
-const calcDisplaySummary = function (movements) {
-  const incomes = movements
+const calcDisplaySummary = function (account) {
+  const incomes = account.movements
     .filter(mov => mov > 0) //positive values
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
-  const out = movements
+  const out = account.movements
     .filter(mov => mov < 0) //negative values
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(out)}€`;
   //interest 1.2% only if interest >= 1€
-  const interest = movements
+  const interest = account.movements
     .filter(mov => mov > 0) //positive values
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * account.interestRate) / 100)
     .filter(interest => interest >= 1) //interest >= 1
     .reduce((acc, interest) => acc + interest, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
-calcDisplaySummary(account1.movements);
+/* calcDisplaySummary(account1.movements); */
+
+// EVENT HANDLER
+let currentAccount;
+
+//Hitting enter in an input element into a from will trigger the click event of the button in the form
+btnLogin.addEventListener('click', function (e) {
+  //Prevent form from submitting
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.userName === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+  //optional chaining (currentAccount?) -> ok if exists (not null or)
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    //Display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+    //Clear input fields
+    //CHAIN ASSIGNMENT
+    inputLoginUsername.value = inputLoginPin.value = '';
+    //Remove focus from an element
+    inputLoginUsername.blur();
+    inputLoginPin.blur();
+    //Display movements, balance & summary
+    displayMovements(currentAccount.movements);
+    calcDisplayBalance(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+  }
+  console.log('LOGIN');
+});
