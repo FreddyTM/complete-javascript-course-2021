@@ -121,9 +121,9 @@ userName.forEach(function (mov, i, arr) {
 });
 console.log(userInitials); */
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (account) {
+  account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${account.balance}€`;
 };
 
 /* calcDisplayBalance(account1.movements); */
@@ -146,6 +146,13 @@ const calcDisplaySummary = function (account) {
   labelSumInterest.textContent = `${interest}€`;
 };
 /* calcDisplaySummary(account1.movements); */
+
+//Display movements, balance & summary
+const updateUI = function (account) {
+  displayMovements(account.movements);
+  calcDisplayBalance(account);
+  calcDisplaySummary(account);
+};
 
 // EVENT HANDLER
 let currentAccount;
@@ -171,10 +178,37 @@ btnLogin.addEventListener('click', function (e) {
     //Remove focus from an element
     inputLoginUsername.blur();
     inputLoginPin.blur();
-    //Display movements, balance & summary
-    displayMovements(currentAccount.movements);
-    calcDisplayBalance(currentAccount.movements);
-    calcDisplaySummary(currentAccount);
+    //Update UI
+    updateUI(currentAccount);
+    /* displayMovements(currentAccount.movements);
+    calcDisplayBalance(currentAccount);
+    calcDisplaySummary(currentAccount); */
   }
   console.log('LOGIN');
+});
+
+//inputTransferTo inputTransferAmount btnTransfer
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.userName === inputTransferTo.value
+  );
+  if (
+    amount > 0 &&
+    currentAccount.balance >= amount &&
+    receiverAcc && //receiver account exists
+    receiverAcc?.userName !== currentAccount.userName
+  ) {
+    //Transfer money
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    console.log('Transfer valid');
+    //Update UI
+    updateUI(currentAccount);
+  }
+  //Clean input values
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferAmount.blur();
+  inputTransferTo.blur();
 });
