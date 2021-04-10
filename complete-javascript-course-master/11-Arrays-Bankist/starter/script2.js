@@ -260,13 +260,13 @@ console.log(movements);
 // ONLY EQUALITY
 console.log(movements.includes(-130));
 
-// SOME: CONDITION
+// SOME: CONDITION (true if any element pass the condition)
 console.log(movements.some(mov => mov === -130));
 
 const anyDeposits = movements.some(mov => mov > 0);
 console.log('Any deposits? ' + anyDeposits); //True
 
-// EVERY
+// EVERY : CONDITION (true if all the elements pass the condition)
 console.log(movements.every(mov => mov > 0));
 console.log(account40.movements.every(mov => mov > 0));
 

@@ -155,6 +155,8 @@ const updateUI = function (account) {
 let currentAccount;
 
 //Hitting enter in an input element into a from will trigger the click event of the button in the form
+
+//LOGIN BUTTON
 btnLogin.addEventListener('click', function (e) {
   //Prevent form from submitting
   e.preventDefault();
@@ -184,6 +186,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 });
 
+//TRANSFER BUTTON
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
@@ -209,6 +212,7 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferTo.blur();
 });
 
+//CLOSE ACCOUNT BUTTON
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
   if (
@@ -231,5 +235,25 @@ btnClose.addEventListener('click', function (e) {
     inputClosePin.blur();
   } else {
     console.log('User not found');
+  }
+});
+
+//LOAN BUTTON
+//You'll get a loan only if there's at least one deposit with at least 10% of the loan amount
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (
+    amount > 0 &&
+    currentAccount.movements.some(mov => (mov * 10) / 100 >= amount)
+  ) {
+    console.log('You get a loan');
+    currentAccount.movements.push(amount);
+    //Update UI
+    updateUI(currentAccount);
+    //Clean input values
+    inputLoanAmount.value = '';
+  } else {
+    console.log("You don't get a loan");
   }
 });
