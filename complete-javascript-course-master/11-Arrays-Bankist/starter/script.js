@@ -126,8 +126,6 @@ const calcDisplayBalance = function (account) {
   labelBalance.textContent = `${account.balance}€`;
 };
 
-/* calcDisplayBalance(account1.movements); */
-
 const calcDisplaySummary = function (account) {
   const incomes = account.movements
     .filter(mov => mov > 0) //positive values
@@ -145,7 +143,6 @@ const calcDisplaySummary = function (account) {
     .reduce((acc, interest) => acc + interest, 0);
   labelSumInterest.textContent = `${interest}€`;
 };
-/* calcDisplaySummary(account1.movements); */
 
 //Display movements, balance & summary
 const updateUI = function (account) {
@@ -183,11 +180,10 @@ btnLogin.addEventListener('click', function (e) {
     /* displayMovements(currentAccount.movements);
     calcDisplayBalance(currentAccount);
     calcDisplaySummary(currentAccount); */
+    console.log('LOGIN');
   }
-  console.log('LOGIN');
 });
 
-//inputTransferTo inputTransferAmount btnTransfer
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
@@ -211,4 +207,29 @@ btnTransfer.addEventListener('click', function (e) {
   inputTransferAmount.value = inputTransferTo.value = '';
   inputTransferAmount.blur();
   inputTransferTo.blur();
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    currentAccount.userName === inputCloseUsername.value &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    console.log('User found');
+    console.log('DELETE');
+    //Index of currentAccount in accounts array
+    const index = accounts.findIndex(
+      acc => acc.userName === currentAccount.userName
+    );
+    //Delete user
+    accounts.splice(index, 1);
+    //Hide UI
+    containerApp.style.opacity = 0;
+    //Clean input values
+    inputCloseUsername.value = inputClosePin.value = '';
+    inputCloseUsername.blur();
+    inputClosePin.blur();
+  } else {
+    console.log('User not found');
+  }
 });

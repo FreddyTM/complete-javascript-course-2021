@@ -242,3 +242,36 @@ console.log(newAccounts);
 
 const account = newAccounts.find(acc => acc.owner === 'Jessica Davis');
 console.log(account);
+
+///////////////////////////////////////
+// The includes Method
+//Determines whether an array includes a certain value among its entries, returning true or false
+const array1 = [1, 2, 3];
+
+console.log(array1.includes(2));
+// expected output: true
+console.log(array1.includes(8));
+// expected output: false
+
+///////////////////////////////////////
+// some and every
+console.log(movements);
+
+// ONLY EQUALITY
+console.log(movements.includes(-130));
+
+// SOME: CONDITION
+console.log(movements.some(mov => mov === -130));
+
+const anyDeposits = movements.some(mov => mov > 0);
+console.log('Any deposits? ' + anyDeposits); //True
+
+// EVERY
+console.log(movements.every(mov => mov > 0));
+console.log(account40.movements.every(mov => mov > 0));
+
+// Separate callback
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
