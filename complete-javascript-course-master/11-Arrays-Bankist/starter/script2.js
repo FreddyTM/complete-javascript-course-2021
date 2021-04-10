@@ -275,3 +275,64 @@ const deposit = mov => mov > 0;
 console.log(movements.some(deposit));
 console.log(movements.every(deposit));
 console.log(movements.filter(deposit));
+
+///////////////////////////////////////
+// flat and flatMap
+//FLAT: removes nested arrays. We get an array with only single elements
+//No callback function needed
+const arrX = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arrX.flat());
+//flat(flat_levels) -> if there are multiple-level nested arrays, flat_levels tells how deep you flat the array
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat()); //[1, 2, 3, 4, 5, 6, 7, 8]
+console.log(arrDeep.flat(2)); //[[1, 2], 3, 4, [5, 6], 7, 8]
+
+// flat
+const overalBalance = newAccounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overalBalance);
+
+// flatMap combines flat & map methods. We need the callback of the map function
+//It goes only one level deep flat
+const overalBalance2 = newAccounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overalBalance2);
+
+///////////////////////////////////////
+// Sorting Arrays
+//IMPORTANT: The original array gets changed
+//sort() doesn't work with mixed arrays, only with strings or numbers arrays
+
+// Strings
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+console.log(owners.sort());
+console.log(owners);
+
+// Numbers
+//sort() transform numbers into strings and sort them in alphabetical order
+//so the sorting is not numerically correct. To achieve that, we need a callback function
+console.log(movements);
+
+// return < 0, A, B (keep order)
+// return > 0, B, A (switch order)
+
+// Ascending
+//a, b -> any two consecutive numbers in the array
+
+/* movements.sort((a, b) => {
+  if (a > b) return 1; //Any value greater than 0
+  if (a < b) return -1; //Any value less than 0
+}); */
+movements.sort((a, b) => a - b); //a > b, return positive | a < b, return negative
+console.log(movements);
+
+// Descending
+movements.sort((a, b) => {
+  if (a > b) return -1;
+  if (a < b) return 1;
+});
+movements.sort((a, b) => b - a);
+console.log(movements);

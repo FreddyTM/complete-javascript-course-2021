@@ -65,12 +65,16 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   //Empty movements list
   //innerHTML replaces whatever html code with the code on the right of =, in this case, nothing.
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  //movs is a sorted copy of movements array, only if sort = true
+  //slice() gets the flat copy
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     //Set the type: positive -> deposit, negative -> withdrawal
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     //html to insert into the movements div as a new movement row
@@ -256,4 +260,12 @@ btnLoan.addEventListener('click', function (e) {
   } else {
     console.log("You don't get a loan");
   }
+});
+
+//SORT BUTTON
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
