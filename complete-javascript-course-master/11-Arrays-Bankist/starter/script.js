@@ -269,3 +269,47 @@ btnSort.addEventListener('click', function (e) {
   displayMovements(currentAccount.movements, !sorted);
   sorted = !sorted;
 });
+
+//////////////////////////////////////////////////////
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+});
+
+///////////////////////////////////////
+// Array Methods Practice
+// 1. Get the sum of all account's balances
+const bankDepositSum2 = accounts
+  .flatMap(acc => acc.movements) // all account.movements arrays into one flat array (all values togheter)
+  .filter(mov => mov > 0) // only positive values
+  .reduce((sum, cur) => sum + cur, 0); // sum of all values
+
+console.log(bankDepositSum2); //25180
+
+// 2. Get how many deposits >= 1000
+const numDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov >= 1000).length;
+
+const altNumDeposits1000 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, cur) => (cur >= 1000 ? count + 1 : count), 0); //or instead of count + 1, ++count (prefix to accumulate before returning)
+console.log(numDeposits1000);
+console.log(altNumDeposits1000);
+
+// 3. Create an object that contains the sum of the deposits and the withdrawals
+//const { deposits, withdrawals } = accounts
+const sums = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
+      //sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur;
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+console.log(sums);

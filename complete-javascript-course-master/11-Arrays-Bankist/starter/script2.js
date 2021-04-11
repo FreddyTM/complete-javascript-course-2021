@@ -336,3 +336,82 @@ movements.sort((a, b) => {
 });
 movements.sort((a, b) => b - a);
 console.log(movements);
+
+///////////////////////////////////////
+// More Ways of Creating and Filling Arrays
+const arr3 = [1, 2, 3, 4, 5, 6, 7];
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+// Empty arrays + fill method
+const x = new Array(7);
+console.log(x); //7 empty spaces in the array
+
+//fill(content, start_index, end_index)
+x.fill(1, 3, 5); // [empty × 3, 1, 1, empty × 2]
+console.log(x);
+x.fill(1); // [1, 1, 1, 1, 1, 1, 1]
+console.log(x);
+//The array doesn't have to be empty
+arr3.fill(23, 2, 6); //Before [1, 2, 3, 4, 5, 6, 7] , after [1, 2, 23, 23, 23, 23, 7]
+console.log(arr3);
+
+// Array.from
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y); //// [1, 1, 1, 1, 1, 1, 1]
+
+// Array.from({object_length}, (current_element, index) => callback function)
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z); //[1, 2, 3, 4, 5, 6, 7]
+
+console.log(Math.trunc(Math.random() * 6 + 1));
+const diceArray = Array.from({ length: 100 }, () =>
+  Math.trunc(Math.random() * 6 + 1)
+);
+console.log(diceArray);
+
+/* labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+
+  const movementsUI2 = [...document.querySelectorAll('.movements__value')];
+}); */
+
+// 4. Capitalice first letter of every word of a sentence
+// this is a nice title -> This Is a Nice Title
+// some words must not be capitalize, they'll be in an array of exceptions
+const convertTitleCase = function (title) {
+  const exceptions = [
+    'a',
+    'an',
+    'and',
+    'the',
+    'but',
+    'or',
+    'on',
+    'in',
+    'with',
+    'to',
+    'of',
+  ];
+
+  //The first word of the sentence must be capitalized no matter what
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+  const splitted = title
+    .toLowerCase()
+    .split(' ')
+    .map(val => (exceptions.includes(val) ? val : capitalize(val)))
+    .join(' ');
+  return capitalize(splitted);
+};
+console.log(convertTitleCase('this is a nice title'));
+console.log(convertTitleCase('THis iS A niCE TiTLe'));
+console.log(
+  convertTitleCase(
+    'tHis wiLl be ANOTHER SENtence to ChecK, the loNGest one anD THE mosT COMpLEx'
+  )
+);
+console.log(convertTitleCase('and this IS The fiNAL CHEck oF all'));
+//////////////////////////////////////////////////////
