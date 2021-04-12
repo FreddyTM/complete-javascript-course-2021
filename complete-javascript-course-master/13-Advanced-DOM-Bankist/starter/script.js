@@ -196,6 +196,9 @@ nav.addEventListener('mouseout', function (e) {
 ///////////////////////////////////////
 // Sticky navigation: Intersection Observer API
 
+//Creating an intersection observer
+//const observer = new ItersectionObserver(callback_function, options --an object--)
+
 //We want to make the navigation bar sticky in the beginning of section 1
 //or when the heather sections goes out of view
 //We'll also fine tune the sticky nav bar to appear when the section1 would intersect de nav bar
@@ -246,6 +249,34 @@ allSections.forEach(function (section) {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+// Lazy loading images
+//select all elements of type img that has a data-src attribute
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+  //Listener to listen to the images load. Event is triggered when the image finishes load
+  entry.target.addEventListener('load', function () {
+    //Then we remove the blur by removing the 'lazy-img' class
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px', //big image loading start 200px before they show into the viewport
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -461,5 +492,6 @@ console.log(h1.nextSibling);
 //All of the siblings included itself (h1)
 console.log(h1.parentElement.children);
 [...h1.parentElement.children].forEach(function (el) {
-  if (el !== h1) el.style.transform = 'scale(0.5)';
+  //Excluding itself
+  /* if (el !== h1) el.style.transform = 'scale(0.5)'; */
 });
