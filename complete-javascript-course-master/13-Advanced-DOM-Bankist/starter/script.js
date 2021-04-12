@@ -96,10 +96,12 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   //e.target is the element that triggered the event
   //Now we have to filter the events coming from the child elements from the events coming from de ancestor itself, wich we won't probably use
   // Matching strategy
-  if (e.target.classList.contains('nav__link')) { //Only nav__link class elements will pass the test (the ancestor element won't)
+  if (e.target.classList.contains('nav__link')) {
+    //Only nav__link class elements will pass the test (the ancestor element won't)
     const id = e.target.getAttribute('href'); // In this case href="#section_id"
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' }); //We can query by id to set the smooth scroll
   }
+});
 ///////////////////////////////////////
 ///////////////////////////////////////
 ///////////////////////////////////////
@@ -153,7 +155,7 @@ document
   .addEventListener('click', function () {
     message.remove();
     /* Old way of removing elements
-    message.parentElement.removeChild(message); */
+  message.parentElement.removeChild(message); */
   });
 
 ///////////////////////////////////////
@@ -258,21 +260,61 @@ const randomColor = () =>
   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
 
 /* document.querySelector('.nav__link').addEventListener('click', function (e) {
-  //In an event listener, 'this' points always to the element to which the eventlistener is attached
-  this.style.backgroundColor = randomColor();
-  console.log('LINK', e.target, e.currentTarget);
-  console.log(e.currentTarget === this);
+//In an event listener, 'this' points always to the element to which the eventlistener is attached
+this.style.backgroundColor = randomColor();
+console.log('LINK', e.target, e.currentTarget);
+console.log(e.currentTarget === this);
 
-  // Stop propagation
-  // e.stopPropagation();
+// Stop propagation
+// e.stopPropagation();
 });
 
 document.querySelector('.nav__links').addEventListener('click', function (e) {
-  this.style.backgroundColor = randomColor();
-  console.log('CONTAINER', e.target, e.currentTarget);
+this.style.backgroundColor = randomColor();
+console.log('CONTAINER', e.target, e.currentTarget);
 });
 
 document.querySelector('.nav').addEventListener('click', function (e) {
-  this.style.backgroundColor = randomColor();
-  console.log('NAV', e.target, e.currentTarget);
+this.style.backgroundColor = randomColor();
+console.log('NAV', e.target, e.currentTarget);
 }); */
+
+///////////////////////////////////////
+// DOM Traversing
+/* const h1 = document.querySelector('h1'); */
+
+// Going downwards: child
+console.log(h1.querySelectorAll('.highlight')); //All children and grandchildren down to the bottom ot the tree
+console.log(h1.childNodes); //All the child nodes, as many as there are (repeted ones included)
+console.log(h1.textContent); //The text content of h1 element
+console.log(h1.innerHTML); //The actual HTML code inside the h1 element (with their attributes & other tags if they exsist)
+//HTML collection (dynamic data) of the elements inside the h1 element
+console.log(h1.children); //HTMLCollection(3) [span.highlight, br, span.highlight]
+//Selecting the first or last element child and changin their style
+h1.firstElementChild.style.color = 'white';
+h1.lastElementChild.style.color = 'orangered';
+
+// Going upwards: parents
+//Usually parentNode & parentElement are the same
+console.log(h1.parentNode);
+console.log(h1.parentElement);
+
+//closest(selector) returns the closest parent element that matches the selector string, or null if none does
+//Then we can manipulate the element we fount as any other element
+//It's also very useful for event delegation
+h1.closest('.header').style.background = 'var(--gradient-secondary)';
+
+h1.closest('h1').style.background = 'var(--gradient-primary)';
+
+// Going sideways: siblings
+console.log(h1.previousElementSibling);
+console.log(h1.nextElementSibling);
+
+console.log(h1.previousSibling);
+console.log(h1.nextSibling);
+
+//All of the siblings included itself (h1)
+console.log(h1.parentElement.children);
+[...h1.parentElement.children].forEach(function (el) {
+  if (el !== h1) el.style.transform = 'scale(0.5)';
+});
