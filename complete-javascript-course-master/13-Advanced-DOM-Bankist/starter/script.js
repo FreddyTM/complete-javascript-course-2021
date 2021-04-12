@@ -7,6 +7,7 @@ const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const btnScrollTo = document.querySelector('.btn--scroll-to');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -34,8 +35,77 @@ document.addEventListener('keydown', function (e) {
 });
 
 ///////////////////////////////////////
+// Button scrolling
+const section1 = document.querySelector('#section--1');
+btnScrollTo.addEventListener('click', function (e) {
+  //Bounds of section1
+  const s1coords = section1.getBoundingClientRect();
+  console.log(s1coords);
+  //Bounds of the event target (the button that we added the eventlistener to)
+  console.log(e.target.getBoundingClientRect());
+  //Position of horizontal/vertical scrolling relative to the top of the page
+  console.log('Current scroll (X/Y)', window.pageXOffset, window.pageYOffset);
+  //Dimensions of the viewport
+  console.log(
+    'height/width viewport',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+
+  // Scrolling
+  /*   window.scrollTo(
+    //Section1 element X coordinate (relative to the viewport) + shifting amount in the X axis
+    s1coords.left + window.pageXOffset, //Horizontal scroll
+    //Section1 element Y coordinate (relative to the viewport) + shifting amount in the Y axis
+    s1coords.top + window.pageYOffset //Vertical scroll
+    //So we need to add the shifting amount (page offset) so that we get to the desired position
+    //no matter where in the page we are when we click the button.
+  ); */
+
+  //We can also implement scrolling using an object with left & top attributes, and specify a behaviour attribute as well
+  // window.scrollTo({
+  //   left: s1coords.left + window.pageXOffset,
+  //   top: s1coords.top + window.pageYOffset,
+  //   behavior: 'smooth',
+  // });
+
+  //THE BEST WAY OF SCROLLING (WITH OPTIONAL SMOOTH BEHAVIOUR) --ONLY WORKS IN MODERN BROWSERS--
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+///////////////////////////////////////
+// Page navigation
+
+//Attaching an eventlistener to all the elements selected
+//If there's a ton of elements selected, a ton of listeners & funtcions will be attached. BAD PRACTICE - BAD PERFORMANCE
+/* document.querySelectorAll('.nav__link').forEach(function (el) {
+  el.addEventListener('click', function (e) {
+    e.preventDefault();
+    const id = this.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  });
+}); */
+
+//It's better to use event delegation, setting the eventlistener in a common ancestor of the elements, and fire the event when it bubbles up
+// 1. Add event listener to common parent element
+// 2. Determine what element originated the event
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  e.preventDefault();
+  //e.target is the element that triggered the event
+  //Now we have to filter the events coming from the child elements from the events coming from de ancestor itself, wich we won't probably use
+  // Matching strategy
+  if (e.target.classList.contains('nav__link')) { //Only nav__link class elements will pass the test (the ancestor element won't)
+    const id = e.target.getAttribute('href'); // In this case href="#section_id"
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' }); //We can query by id to set the smooth scroll
+  }
 ///////////////////////////////////////
 ///////////////////////////////////////
+///////////////////////////////////////
+
+////SECTIONS CODE//////////////////////
+
 // Selecting, Creating, and Deleting Elements
 
 // Selecting elements
@@ -153,3 +223,56 @@ logo.classList.contains('c'); // true or false
 
 // Don't use that. It'll remove all the classes of the element, leaving just the new jonas class
 /* logo.clasName = 'jonas'; */
+
+///////////////////////////////////////
+// Types of Events and Event Handlers
+const h1 = document.querySelector('h1');
+
+const alertH1 = function (e) {
+  alert('addEventListener: Great! You are reading the heading :D');
+  //We can also remove listeners added with addEventListener()
+  //In this case we remove the listener right into the listener's function, so it won't trigger the event again
+  h1.removeEventListener('mouseenter', alertH1);
+};
+
+//BEST way of setting event listeners
+//We can also add more than one function to the same listener
+//'mouseenter' event fires an event when you hover the mouse over an element
+h1.addEventListener('mouseenter', alertH1);
+
+//We can also remove listeners added with addEventListener() outside of the listener function according to other needs or circumstances
+//Here we remove the listener after a certain amount of time
+setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 3000);
+
+//OLD way of setting event listeners
+//We can't add more than one function to the same listener, a second function will override the first one
+// h1.onmouseenter = function (e) {
+//   alert('onmouseenter: Great! You are reading the heading :D');
+// };
+
+///////////////////////////////////////
+// Event Propagation in Practice
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
+
+/* document.querySelector('.nav__link').addEventListener('click', function (e) {
+  //In an event listener, 'this' points always to the element to which the eventlistener is attached
+  this.style.backgroundColor = randomColor();
+  console.log('LINK', e.target, e.currentTarget);
+  console.log(e.currentTarget === this);
+
+  // Stop propagation
+  // e.stopPropagation();
+});
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('CONTAINER', e.target, e.currentTarget);
+});
+
+document.querySelector('.nav').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('NAV', e.target, e.currentTarget);
+}); */
