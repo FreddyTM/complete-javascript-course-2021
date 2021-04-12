@@ -8,6 +8,11 @@ const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
+const header = document.querySelector('.header');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -102,9 +107,120 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' }); //We can query by id to set the smooth scroll
   }
 });
+
 ///////////////////////////////////////
+// Tabbed component
+
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+
+  // Guard clause
+  if (!clicked) return; //No parent element, no action
+
+  // Remove active classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // Activate tab
+  clicked.classList.add('operations__tab--active');
+  // Activate content area
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
+
 ///////////////////////////////////////
+// Menu fade animation
+/* const handleHover = function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// Passing "argument" into handler
+//due to bind(), 'this' is bound to the nav element (nav constant), and also to the argument of bind()
+nav.addEventListener('mouseover', handleHover.bind(0.5)); //due to bind(), 'this' is the nav element (nav constant)
+nav.addEventListener('mouseout', handleHover.bind(1)); */
+
+// Menu fade animation (ALTERNATIVE)
+const handleHover = function (e, opacity) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = opacity;
+    });
+    logo.style.opacity = opacity;
+  }
+};
+
+// Menu fade animation (YET ANOTHER ALTERNATIVE)
+// you can log the handleHover(0.1) to see that it returns a function which
+// has access to the argument(opacity value) passed to handleHover() due to closures
+/* const handleHover = function (o) {
+  return function (e) {
+    if (e.target.classList.contains('nav__link')) {
+      const link = e.target;
+      const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+      con;
+      siblings.forEach(el => {
+        if (el !== link) el.style.opacity = o;
+      });
+      logo.style.opacity = o;
+    }
+  };
+};
+
+// Passing "argument" into handler
+nav.addEventListener('mouseover', handleHover(0.5));
+nav.addEventListener('mouseout', handleHover(1)); */
+
+// Passing "argument" into handler
+nav.addEventListener('mouseover', function (e) {
+  handleHover(e, 0.5);
+});
+nav.addEventListener('mouseout', function (e) {
+  handleHover(e, 1);
+});
+
 ///////////////////////////////////////
+// Sticky navigation: Intersection Observer API
+
+//We want to make the navigation bar sticky in the beginning of section 1
+
+/* const initialCoordinates = section1.getBoundingClientRect();
+console.log(initialCoordinates); */
+/* const header = document.querySelector('.header'); */
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  // console.log(entry);
+
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+
+headerObserver.observe(header);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////SECTIONS CODE//////////////////////
 
@@ -116,7 +232,7 @@ console.log(document.documentElement);
 console.log(document.head);
 console.log(document.body);
 
-const header = document.querySelector('.header');
+/* const header = document.querySelector('.header'); */
 //The list of elements returned by querySelectorAll() don't change dynamically. It holds the element list at the time it was called
 //If there are changes after that, they won't be reflected
 //This is because it returns a NodeList
@@ -184,7 +300,7 @@ message.style.height =
 console.log(message.style.height);
 //Setting style properties of the HTML element. It's like setting styles for the whole HTML document
 //These properties are pre-defined in the document root, they are not custom properties that we define in css
-document.documentElement.style.setProperty('--color-primary', 'orangered');
+/* document.documentElement.style.setProperty('--color-primary', 'orangered'); */
 
 // Attributes
 const logo = document.querySelector('.nav__logo');
@@ -291,8 +407,8 @@ console.log(h1.innerHTML); //The actual HTML code inside the h1 element (with th
 //HTML collection (dynamic data) of the elements inside the h1 element
 console.log(h1.children); //HTMLCollection(3) [span.highlight, br, span.highlight]
 //Selecting the first or last element child and changin their style
-h1.firstElementChild.style.color = 'white';
-h1.lastElementChild.style.color = 'orangered';
+/* h1.firstElementChild.style.color = 'white';
+h1.lastElementChild.style.color = 'orangered'; */
 
 // Going upwards: parents
 //Usually parentNode & parentElement are the same
@@ -302,9 +418,9 @@ console.log(h1.parentElement);
 //closest(selector) returns the closest parent element that matches the selector string, or null if none does
 //Then we can manipulate the element we fount as any other element
 //It's also very useful for event delegation
-h1.closest('.header').style.background = 'var(--gradient-secondary)';
+/* h1.closest('.header').style.background = 'var(--gradient-secondary)';
 
-h1.closest('h1').style.background = 'var(--gradient-primary)';
+h1.closest('h1').style.background = 'var(--gradient-primary)'; */
 
 // Going sideways: siblings
 console.log(h1.previousElementSibling);
