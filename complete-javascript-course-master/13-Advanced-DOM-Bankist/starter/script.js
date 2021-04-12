@@ -13,6 +13,7 @@ const tabsContainer = document.querySelector('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
 const nav = document.querySelector('.nav');
 const header = document.querySelector('.header');
+const allSections = document.querySelectorAll('.section');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -196,27 +197,55 @@ nav.addEventListener('mouseout', function (e) {
 // Sticky navigation: Intersection Observer API
 
 //We want to make the navigation bar sticky in the beginning of section 1
+//or when the heather sections goes out of view
+//We'll also fine tune the sticky nav bar to appear when the section1 would intersect de nav bar
 
 /* const initialCoordinates = section1.getBoundingClientRect();
 console.log(initialCoordinates); */
+
 /* const header = document.querySelector('.header'); */
-const navHeight = nav.getBoundingClientRect().height;
+const navHeight = nav.getBoundingClientRect().height; //The heigth of the nav bar
 
 const stickyNav = function (entries) {
-  const [entry] = entries;
+  const [entry] = entries; //The same as const entry = entries[0]
   // console.log(entry);
 
   if (!entry.isIntersecting) nav.classList.add('sticky');
-  else nav.classList.remove('sticky');
+  //If nav is not intersecting with the viewport, sticky
+  else nav.classList.remove('sticky'); // Else remove
 };
 
 const headerObserver = new IntersectionObserver(stickyNav, {
-  root: null,
-  threshold: 0,
-  rootMargin: `-${navHeight}px`,
+  root: null, //Element that the target is intersecting. Null for the entire viewport
+  threshold: 0, //Percertage of intersection for the callback function to be called (can be an array of different values [0, 0.2...])
+  rootMargin: `-${navHeight}px`, //Fine tune. The nav bar appears when section1 reaches its bottom side
 });
 
 headerObserver.observe(header);
+
+///////////////////////////////////////
+// Reveal sections
+/* const allSections = document.querySelectorAll('.section'); */
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  //In style.css, section--hidden {opacity: 0, transform: translateY(8rem)}
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +265,7 @@ console.log(document.body);
 //The list of elements returned by querySelectorAll() don't change dynamically. It holds the element list at the time it was called
 //If there are changes after that, they won't be reflected
 //This is because it returns a NodeList
-const allSections = document.querySelectorAll('.section');
+/* const allSections = document.querySelectorAll('.section'); */
 console.log(allSections);
 
 document.getElementById('section--1');
