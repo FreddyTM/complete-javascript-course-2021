@@ -94,3 +94,134 @@ console.log(arr.unique());
 
 const h1 = document.querySelector('h1');
 console.dir(x => x + 1);
+
+///////////////////////////////////////
+// ES6 Classes
+
+// Class expression
+// const PersonCl = class {}
+
+// Class declaration
+class PersonCl {
+  //The constructor method NEEDS to be named 'constructor'
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+  // Instance methods
+  // Methods will be added to .prototype property
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  }
+
+  greet() {
+    console.log(`Hey ${this.fullName}`);
+  }
+
+  // Setters and Getters with objects that are defined in classes
+  //We use the keywords set & get to create setters & getters
+  //But we don't call setter & getter functions as functions (with ()), we do it just like attributes
+  //Althoug setters & getters are methods, they're treated as attributes inside the object & prototype
+  /*   PersonCl {fullName: "Jessica Davis", birthYear: 1996}
+    birthYear: 1996
+    fullName: "Jessica Davis"
+    age: (...)
+    __proto__:
+      age: (...)
+      calcAge: ƒ calcAge()
+      constructor: class PersonCl
+      greet: ƒ greet()
+      get age: ƒ age()
+      __proto__: Object */
+  get age() {
+    return 2037 - this.birthYear;
+  }
+
+  // Set a property that already exists
+  //To avoid a conflict, by convention the property name starts by underscore, so fullName becomes _fullName
+  set fullName(name) {
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  }
+
+  get fullName() {
+    return this._fullName;
+  }
+
+  // Static method
+  static hey() {
+    console.log('Hey there 👋');
+    console.log(this);
+  }
+}
+
+const jessica = new PersonCl('Jessica Davis', 1996);
+console.log(jessica);
+jessica.calcAge();
+console.log(jessica.age);
+
+console.log(jessica.__proto__ === PersonCl.prototype);
+
+// PersonCl.prototype.greet = function () {
+//   console.log(`Hey ${this.firstName}`);
+// };
+jessica.greet();
+
+/* const walter = new PersonCl('Walter', 1965); //Walter is not a full name. set fullName() checks for that*/
+/* walter.greet(); //Hey undefined */
+const walter2 = new PersonCl('Walter White', 1965);
+walter2.greet(); //Hey Walter White
+
+PersonCl.hey();
+
+// 1. Classes are NOT hoisted
+// 2. Classes are first-class citizens
+// 3. Classes are executed in strict mode
+
+///////////////////////////////////////
+// Setters and Getters with objects that are not defined in classes
+const account = {
+  owner: 'Jonas',
+  movements: [200, 530, 120, 300],
+
+  //We use the keywords set & get to create setters & getters
+  get latest() {
+    return this.movements.slice(-1).pop();
+  },
+
+  set latest(mov) {
+    this.movements.push(mov);
+  },
+};
+
+//But we don't call setter & getter functions as functions (with ()), we do it just like attributes
+console.log(account.latest); //To get latest
+
+account.latest = 50; //To set latest
+console.log(account.movements);
+
+///////////////////////////////////////
+// Object.create
+//First we create the prototype object, and then we create a new object and assign it the prototype object
+const PersonProto = {
+  calcAge() {
+    console.log(2037 - this.birthYear);
+  },
+
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto);
+console.log(steven);
+steven.name = 'Steven';
+steven.birthYear = 2002;
+steven.calcAge();
+
+console.log(steven.__proto__ === PersonProto);
+
+const sarah = Object.create(PersonProto);
+sarah.init('Sarah', 1979);
+sarah.calcAge();
