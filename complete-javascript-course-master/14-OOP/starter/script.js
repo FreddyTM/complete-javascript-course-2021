@@ -262,3 +262,34 @@ console.log(michael instanceof Object);
 
 Student.prototype.constructor = Student;
 console.dir(Student.prototype.constructor);
+
+///////////////////////////////////////
+// Inheritance Between "Classes": ES6 Classes
+//The extends keyword will link StudentCl prototype to the PersonCl prototype
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    //Instead of Superclass.call(this, args...), we call the super() constructor, the constructor of the superclass
+    //This calling to super() MUST BE THE FIRST statement inside the constructor
+    super(fullName, birthYear);
+    this.course = course;
+  }
+  //If the child class doesn't add new properties to the superclass, there's no need to write a constructor inside the child class
+
+  introduce() {
+    console.log(`My name is ${this.fullName} and I study ${this.course}`);
+  }
+
+  calcAge() {
+    console.log(
+      `I'm ${
+        2037 - this.birthYear
+      } years old, but as a student I feel more like ${
+        2037 - this.birthYear + 10
+      }`
+    );
+  }
+}
+
+const martha = new StudentCl('Martha Jones', 2012, 'Computer Science');
+martha.introduce();
+martha.calcAge();
