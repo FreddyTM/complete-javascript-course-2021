@@ -19,6 +19,9 @@ const getAllcountiesData = function () {
   });
 };
 
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+};
 const renderCountry = function (data, className = '') {
   const html = `
   <article class="country ${className}">
@@ -35,7 +38,7 @@ const renderCountry = function (data, className = '') {
   </article>
   `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
+  /* countriesContainer.style.opacity = 1; */
 };
 
 //Gets only the first neighbour of the list of neighbours
@@ -116,7 +119,7 @@ getCountryAndNeighbourData('finland'); */
 // Handling Rejected Promises
 // Throwing Errors Manually
 
-const getCountryData = function (country) {
+/* const getCountryData = function (country) {
   //Fetch function returns a promise
   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
     //Handle the promise with then()'
@@ -131,12 +134,27 @@ const getCountryData = function (country) {
       console.log(data);
       renderCountry(data[0]);
     });
+}; */
+
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+  return fetch(url).then(response => {
+    if (!response.ok) {
+      throw new Error(`${errorMsg} (${response.status})`);
+    }
+  });
 };
 
 const getCountryDataSimplified = function (country) {
   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
     //Country from the first fetch
-    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+      //Throw error if the response is not what we expected
+      if (!response.ok) {
+        throw new Error(`Country not found (${response.status})`);
+      }
+      return response.json();
+    })
     //Now from the country, get the first neighbour
     .then(data => {
       renderCountry(data[0]);
@@ -146,11 +164,23 @@ const getCountryDataSimplified = function (country) {
     })
     //Neighbour from a fetch of the first fetch
     .then(response => response.json())
-    .then(data => renderCountry(data, 'neighbour'));
+    .then(data => renderCountry(data, 'neighbour'))
+    //Catching a rejected promise at the end of the promise chain
+    .catch(err => {
+      console.log(`${err}`);
+      renderError(`Something went wrong ${err.message}. Try again!`);
+    })
+    //Finally block always execute
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
 };
 //ALWAYS CHAIN ONE PROMISE AFTER ANOTHER, NOT INTO ANOTHER. SO:
 //fetch().then().then()
 //NOT fetch().then(fetch().then())
 
+btn.addEventListener('click', function () {
+  getCountryDataSimplified('sweden');
+});
+
 /* getCountryData('sweden'); */
-getCountryDataSimplified('sweden');
