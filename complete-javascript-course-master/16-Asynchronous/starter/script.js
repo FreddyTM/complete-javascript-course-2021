@@ -117,15 +117,40 @@ getCountryAndNeighbourData('finland'); */
 // Throwing Errors Manually
 
 const getCountryData = function (country) {
+  //Fetch function returns a promise
   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+    //Handle the promise with then()'
     .then(function (response) {
       console.log(response);
+      //Read the response with json() and return it
       return response.json();
     })
+    //response.json() returns another promise, so we handle it again
+    //data = response.json()
     .then(function (data) {
       console.log(data);
       renderCountry(data[0]);
     });
 };
 
-getCountryData('sweden');
+const getCountryDataSimplified = function (country) {
+  fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+    //Country from the first fetch
+    .then(response => response.json())
+    //Now from the country, get the first neighbour
+    .then(data => {
+      renderCountry(data[0]);
+      const neighbour = data[0].borders[0];
+      if (!neighbour) return;
+      return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`);
+    })
+    //Neighbour from a fetch of the first fetch
+    .then(response => response.json())
+    .then(data => renderCountry(data, 'neighbour'));
+};
+//ALWAYS CHAIN ONE PROMISE AFTER ANOTHER, NOT INTO ANOTHER. SO:
+//fetch().then().then()
+//NOT fetch().then(fetch().then())
+
+/* getCountryData('sweden'); */
+getCountryDataSimplified('sweden');
