@@ -26,17 +26,41 @@ TEST COORDINATES 2: -33.933, 18.474
 
 GOOD LUCK 😀
 */
+const btn = document.querySelector('.btn-coordinates');
+const inputLat = document.querySelector('.input-lat');
+const inputLng = document.querySelector('.input-lng');
 
-const whereAmI = function(lat, lng) {
-  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`).then(response => {
-    if(!response.ok) {
-      throw new Error(`Something went wrong with those coordinates. ${response.status}`)
+console.log(inputLat.value);
+
+const whereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          `Something went wrong with those coordinates. ${response.status}`
+        );
+      }
       return response.json();
-    }
-  })
-}
+    })
+    .then(data => {
+      console.log(data);
+      console.log(`You are in ${data.city}, ${data.country}`);
+      return fetch(
+        `https://restcountries.eu/rest/v2/name/${data.country.toLowerCase()}`
+      );
+    })
+    .then(data => console.log(data))
+    .catch(err => {
+      console.log(`Something went wrong ${err.message}. Try again!`);
+      /* renderError(`Something went wrong ${err.message}. Try again!`); */
+    });
+};
 
-whereAmI(52.508, 13.381);
+btn.addEventListener('click', function (e) {
+  e.preventDefault();
+  whereAmI(inputLat.value, inputLng.value);
+});
+/* whereAmI(52.508, 13.381); */
 
 /*
 const whereAmI = function (lat, lng) {
@@ -62,3 +86,4 @@ const whereAmI = function (lat, lng) {
 whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
 whereAmI(-33.933, 18.474);
+*/
