@@ -29,38 +29,114 @@ GOOD LUCK 😀
 const btn = document.querySelector('.btn-coordinates');
 const inputLat = document.querySelector('.input-lat');
 const inputLng = document.querySelector('.input-lng');
+const countriesContainer = document.querySelector('.countries');
+const cityContainer = document.querySelector('.city');
 
-console.log(inputLat.value);
+const renderCity = function (data) {
+  const html = `City name: ${data.city}`;
+  cityContainer.insertAdjacentHTML('beforeend', html);
+};
+
+const renderCountry = function (data, className = '') {
+  const borders = data.borders;
+  let res = '';
+  for (let i = 0; i < borders.length; i++) {
+    res += `<li>${borders[i]}</li>`;
+  }
+  console.log(borders);
+
+  const html = `
+  <article class="country ${className}">
+    <img class="country__img" src="${data.flag}" />
+    <div class="country__data">
+      <h3 class="country__name">${data.name}</h3>
+      <h4 class="country__region">${data.region}</h4>
+      <p class="country__row"><span>👫</span>${(
+        +data.population / 1000000
+      ).toFixed(1)} people</p>
+      <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+      <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
+      <p class="country__row"><span>⏮⏭</span>
+      <ul style="list-style: none">${res}
+        </ul></p>
+    </div>
+  </article>
+  `;
+  countriesContainer.insertAdjacentHTML('beforeend', html);
+  /* countriesContainer.style.opacity = 1; */
+};
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+};
+
+{
+  /* <ul style="list-style: none">
+${data[0].borders.forEach(
+  value => '<li>' + value + '</li>'
+)}</ul> */
+}
 
 const whereAmI = function (lat, lng) {
+  if (!lat || !lng) return;
+  console.log(typeof +lat, lat);
+  console.log(typeof +lng, lng);
+  /* if ( typeof !lat ('number') || typeof !lng  ('number') return; */
   fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
     .then(response => {
       if (!response.ok) {
         throw new Error(
           `Something went wrong with those coordinates. ${response.status}`
         );
+      } else {
+        console.log('So far so good');
       }
-      return response.json();
+      const data = response.json();
+      console.log(data);
+      return data;
     })
     .then(data => {
       console.log(data);
-      console.log(`You are in ${data.city}, ${data.country}`);
+      if (data.city === undefined || data.country === undefined) {
+        renderError('Sorry, location not found');
+      } else {
+        renderCity(data);
+        console.log(`You are in ${data.city}, ${data.country}`);
+      }
       return fetch(
         `https://restcountries.eu/rest/v2/name/${data.country.toLowerCase()}`
       );
     })
-    .then(data => console.log(data))
+    .then(data => {
+      const parsedData = data.json();
+      console.log(parsedData);
+      return parsedData;
+      renderCountry(parsedData, '');
+    })
+    .then(parsedData => {
+      renderCountry(parsedData[0], '');
+    })
+    .catch(err => {
+      /*       console.log(`${err}`); */
+      console.log(`Something went wrong ${err.message}. Try again!`);
+    })
+    //Finally block always execute
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    })
     .catch(err => {
       console.log(`Something went wrong ${err.message}. Try again!`);
-      /* renderError(`Something went wrong ${err.message}. Try again!`); */
     });
 };
 
 btn.addEventListener('click', function (e) {
   e.preventDefault();
+  countriesContainer.innerHTML = '';
+  cityContainer.innerHTML = '';
   whereAmI(inputLat.value, inputLng.value);
 });
 /* whereAmI(52.508, 13.381); */
+/* whereAmI(50.508, 19.381); */
 
 /*
 const whereAmI = function (lat, lng) {
