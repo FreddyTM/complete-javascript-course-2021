@@ -1,4 +1,6 @@
 'use strict';
+import { whereAmI } from './challenge.js';
+import { renderCountry as betterRenderCountry } from './challenge.js';
 
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
@@ -237,4 +239,72 @@ wait(1)
 // }, 1000);
 
 Promise.resolve('abc').then(x => console.log(x));
-Promise.reject(new Error('Problem!')).catch(x => console.error(x));
+// Promise.reject(new Error('Problem!')).catch(x => console.error(x));
+
+///////////////////////////////////////
+// Promisifying the Geolocation API
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => resolve(position),
+    //   err => reject(err)
+    // );
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+getPosition()
+  .then(pos => {
+    console.log(pos);
+    return pos;
+  })
+  .then(pos => {
+    whereAmI(pos.coords.latitude + 2, pos.coords.longitude);
+    console.log();
+  })
+  .catch(console.log('Something went wrong'));
+
+///////////////////////////////////////
+// Consuming Promises with Async/Await
+// Error Handling With try...catch
+
+//An async function returns a promise
+/* const whereAmI2 = async function (country) { */
+const whereAmI2 = async function () {
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    // Reverse geocoding
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    const dataGeo = await resGeo.json();
+    //Country data
+
+    //await forces the function to wait for the fetch method (for the promise to settle)
+    const res = await fetch(
+      `https://restcountries.eu/rest/v2/name/${dataGeo.country}`
+    );
+    //It's equivalent to
+    //fetch(`https://restcountries.eu/rest/v2/name/${country}`).then(res => console.log(res));
+    const data = await res.json();
+    console.log(data);
+    betterRenderCountry(data[0]);
+  } catch (err) {
+    console.log(`Bad luck, we did something wrong 💩💩💩 ${err.message}`);
+    renderError(`Bad luck, we did something wrong 💩💩💩 ${err.message}`);
+  }
+};
+/* whereAmI2('sweden'); */
+whereAmI2();
+
+/* try {
+  let y = 1;
+  const x = 2;
+  x = 3;
+} catch (err) {
+  console.log(err.message);
+  let obj = {};
+  obj = err;
+  let arr = [err];
+  console.log(obj);
+  console.log(arr);
+} */

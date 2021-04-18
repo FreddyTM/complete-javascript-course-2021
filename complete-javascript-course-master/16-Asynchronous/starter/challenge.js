@@ -66,6 +66,8 @@ const renderCountry = function (data, className = '') {
   /* countriesContainer.style.opacity = 1; */
 };
 
+export { renderCountry };
+
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
 };
@@ -128,6 +130,8 @@ const whereAmI = function (lat, lng) {
       console.log(`Something went wrong ${err.message}. Try again!`);
     });
 };
+
+export { whereAmI };
 
 btn.addEventListener('click', function (e) {
   e.preventDefault();
