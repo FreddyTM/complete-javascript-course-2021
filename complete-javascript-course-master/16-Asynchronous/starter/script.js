@@ -270,7 +270,7 @@ getPosition()
     return pos;
   })
   .then(pos => {
-    whereAmI(pos.coords.latitude + 2, pos.coords.longitude);
+    whereAmI(pos.coords.latitude, pos.coords.longitude);
     console.log();
   })
   .catch(console.log('Something went wrong'));
@@ -307,6 +307,7 @@ const whereAmI2 = async function () {
   }
 };
 /* whereAmI2('sweden'); */
+///////////////////////////////RUN THIS/////////////////////////////////////////
 /* whereAmI2(); */
 
 /* try {

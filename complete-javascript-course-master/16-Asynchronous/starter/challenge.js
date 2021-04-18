@@ -66,17 +66,15 @@ const renderCountry = function (data, className = '') {
   /* countriesContainer.style.opacity = 1; */
 };
 
-export { renderCountry };
-
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
 };
 
 {
   /* <ul style="list-style: none">
-${data[0].borders.forEach(
-  value => '<li>' + value + '</li>'
-)}</ul> */
+  ${data[0].borders.forEach(
+    value => '<li>' + value + '</li>'
+    )}</ul> */
 }
 
 const whereAmI = function (lat, lng) {
@@ -94,7 +92,7 @@ const whereAmI = function (lat, lng) {
         console.log('So far so good');
       }
       const data = response.json();
-      console.log(data);
+      /* console.log(data); */
       return data;
     })
     .then(data => {
@@ -111,9 +109,9 @@ const whereAmI = function (lat, lng) {
     })
     .then(data => {
       const parsedData = data.json();
-      console.log(parsedData);
+      /* console.log(parsedData); */
       return parsedData;
-      renderCountry(parsedData, '');
+      /* renderCountry(parsedData, ''); */
     })
     .then(parsedData => {
       renderCountry(parsedData[0], '');
@@ -131,7 +129,7 @@ const whereAmI = function (lat, lng) {
     });
 };
 
-export { whereAmI };
+/* export { renderCountry }; */
 
 btn.addEventListener('click', function (e) {
   e.preventDefault();
@@ -145,25 +143,67 @@ btn.addEventListener('click', function (e) {
 /*
 const whereAmI = function (lat, lng) {
   fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
-    .then(res => {
-      if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      console.log(data);
-      console.log(`You are in ${data.city}, ${data.country}`);
-
-      return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Country not found (${res.status})`);
-
-      return res.json();
-    })
-    .then(data => renderCountry(data[0]))
-    .catch(err => console.error(`${err.message} 💥`));
+  .then(res => {
+    if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`);
+    return res.json();
+  })
+  .then(data => {
+    console.log(data);
+    console.log(`You are in ${data.city}, ${data.country}`);
+    
+    return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+  })
+  .then(res => {
+    if (!res.ok) throw new Error(`Country not found (${res.status})`);
+    
+    return res.json();
+  })
+  .then(data => renderCountry(data[0]))
+  .catch(err => console.error(`${err.message} 💥`));
 };
 whereAmI(52.508, 13.381);
 whereAmI(19.037, 72.873);
 whereAmI(-33.933, 18.474);
 */
+export { whereAmI, renderCountry };
+
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+PART 1
+Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await (only the part where the promise is consumed). Compare the two versions, think about the big differences, and see which one you like more.
+Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+
+*/
+
+const whereAmIAsync = async function (lat, lng) {
+  if (!lat || !lng) return;
+  try {
+    const rawData = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    if (!rawData.ok) {
+      throw new Error(
+        `Something went wrong with those coordinates. ${response.status}`
+      );
+    } else {
+      console.log('So far so good');
+    }
+    const data = await rawData.json();
+    console.log(data);
+    if (data.city === undefined || data.country === undefined) {
+      renderError('Sorry, location not found');
+    } else {
+      renderCity(data);
+      console.log(`You are in ${data.city}, ${data.country}`);
+    }
+    const countryData = await fetch(
+      `https://restcountries.eu/rest/v2/name/${data.country.toLowerCase()}`
+    );
+    const parsedData = await countryData.json();
+    renderCountry(parsedData[0], '');
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+whereAmIAsync(52.508, 13.381);
