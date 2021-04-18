@@ -138,14 +138,26 @@ getCountryAndNeighbourData('finland'); */
     });
 }; */
 
-const getJSON = function (url, errorMsg = 'Something went wrong') {
-  return fetch(url).then(response => {
-    if (!response.ok) {
+/* const getJSON = function (url, errorMsg = 'Something went wrong') { */
+const getJSON = function (url) {
+  fetch(url)
+    .then(response => console.log(response.json()))
+    .catch(e => console.error(e));
+  /*     if (!response.ok) {
       throw new Error(`${errorMsg} (${response.status})`);
-    }
-  });
+    } */
 };
 
+const newGetJSON = async function (url) {
+  try {
+    const data = await fetch(url);
+    const dataJSON = await data.json();
+    return dataJSON;
+  } catch (e) {
+    console.log(e.message);
+  }
+};
+/////////////////////////////////////////////////////////////////////
 const getCountryDataSimplified = function (country) {
   fetch(`https://restcountries.eu/rest/v2/name/${country}`)
     //Country from the first fetch
@@ -288,13 +300,14 @@ const whereAmI2 = async function () {
     const data = await res.json();
     console.log(data);
     betterRenderCountry(data[0]);
+    return data;
   } catch (err) {
     console.log(`Bad luck, we did something wrong 💩💩💩 ${err.message}`);
     renderError(`Bad luck, we did something wrong 💩💩💩 ${err.message}`);
   }
 };
 /* whereAmI2('sweden'); */
-whereAmI2();
+/* whereAmI2(); */
 
 /* try {
   let y = 1;
@@ -308,3 +321,117 @@ whereAmI2();
   console.log(obj);
   console.log(arr);
 } */
+
+///////////////////////////////////////
+// Returning Values from Async Functions
+
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message} 💥`))
+//   .finally(() => console.log('3: Finished getting location'));
+
+/* (async function () {
+  try {
+    const country = await whereAmI2();
+    console.log(`2: ${country[0].name}`);
+  } catch (err) {
+    console.error(`2: ${err.message} 💥`);
+  }
+  console.log('3: Finished getting location');
+})(); */
+
+///////////////////////////////////////
+// Running Promises in Parallel
+//Promise combinators
+
+/* const getJSON = function (url, errorMsg = 'Something went wrong') {
+  return fetch(url).then(response => {
+    if (!response.ok) {
+      throw new Error(`${errorMsg} (${response.status})`);
+    }
+  });
+}; */
+
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    //Each call to newGetJSON run each promise one after another
+    const [data1] = await newGetJSON(
+      `https://restcountries.eu/rest/v2/name/${c1}`
+    );
+    const [data2] = await newGetJSON(
+      `https://restcountries.eu/rest/v2/name/${c2}`
+    );
+    const [data3] = await newGetJSON(
+      `https://restcountries.eu/rest/v2/name/${c3}`
+    );
+    console.log(data1.capital, data2.capital, data3.capital);
+
+    //Promise.all() run all the promises at the same time
+    //If one promise is rejected, all of them are rejected
+    //Use Promise.all() whenever you need to do multiple async operations (that don't depend on one other) at the same time
+    const data = await Promise.all([
+      newGetJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+      newGetJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+      newGetJSON(`https://restcountries.eu/rest/v2/name/${c3}`),
+    ]);
+    console.log(data.map(d => d[0].capital));
+  } catch (err) {
+    console.error(err);
+  }
+};
+get3Countries('portugal', 'canada', 'tanzania');
+
+///////////////////////////////////////
+// Other Promise Combinators: race, allSettled and any
+// Promise.race -> The first promise to settle is the promise returned
+(async function () {
+  const res = await Promise.race([
+    newGetJSON(`https://restcountries.eu/rest/v2/name/mexico`),
+    newGetJSON(`https://restcountries.eu/rest/v2/name/italy`),
+    newGetJSON(`https://restcountries.eu/rest/v2/name/egypt`),
+  ]);
+  console.log(res[0]);
+})();
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error('Request took too long!'));
+    }, sec * 1000);
+  });
+};
+
+/* timeout(3); */
+Promise.race([
+  newGetJSON(`https://restcountries.eu/rest/v2/name/tanzania`),
+  timeout(0.05),
+])
+  .then(res => console.log(res[0]))
+  .catch(err => console.error(err));
+
+// Promise.allSettled
+//It gets all promises, wherter they are rejected or resolved
+//Similar to Promise.all(), but Promise.all() shortcircuits as soon as one promise is rejected
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
+
+Promise.all([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'), //Here we have an error, no promise gets returned
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+// Promise.any [ES2021]
+//Returns the first fulfilled promise, ignoring the rest (unles all of them are rejected)
+Promise.any([
+  Promise.resolve('Success'),
+  Promise.reject('ERROR'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
